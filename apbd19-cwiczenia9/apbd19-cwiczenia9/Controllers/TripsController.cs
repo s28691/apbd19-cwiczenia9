@@ -38,25 +38,6 @@ public class TripsController : ControllerBase
             })
         }));
     } 
-    [HttpDelete("{idClient}")]
-    public async Task<IActionResult> DeleteClient(int idClient)
-    {
-        var client = await _context.Clients
-            .Include(client => client.ClientTrips)
-            .FirstOrDefaultAsync(client => client.IdClient == idClient);
-        if (client == null)
-        {
-            return NotFound("Client not found");
-        }
-        if (client.ClientTrips.Any())
-        {
-            return BadRequest("Cannot delete client with connected trips");
-        }
-        _context.Clients.Remove(client);
-        await _context.SaveChangesAsync();
-        return NoContent();
-    }
-    
     [HttpPost("{idTrip}/clients")]
     public async Task<IActionResult> AssignClientToTrip(int idTrip, [FromBody] ClientTripDTO request)
     {
