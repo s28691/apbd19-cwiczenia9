@@ -41,7 +41,7 @@ public class TripsController : ControllerBase
     [HttpPost("{idTrip}/clients")]
     public async Task<IActionResult> AssignClientToTrip(int idTrip, [FromBody] ClientTripDTO request)
     {
-        var existingClient = await _context.Clients.FirstOrDefaultAsync(client => client.Pesel == request.Pesel);
+        Client existingClient = await _context.Clients.FirstOrDefaultAsync(client => client.Pesel == request.Pesel);
         if (existingClient != null)
         {
             return BadRequest("Client with this PESEL exists!");
@@ -55,7 +55,7 @@ public class TripsController : ControllerBase
         {
             return BadRequest("Trip already started!");
         }
-        var newClient = new Client
+        Client newClient = new Client
         {
             FirstName = request.FirstName,
             LastName = request.LastName,
@@ -65,7 +65,6 @@ public class TripsController : ControllerBase
         };
         _context.Clients.Add(newClient);
         await _context.SaveChangesAsync();
-
         var clientTrip = new ClientTrip
         {
             IdClient = newClient.IdClient,
